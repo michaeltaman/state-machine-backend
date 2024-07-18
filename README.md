@@ -3,9 +3,44 @@
 # Release notes:
 ## The easiest way is to run the server side of the application via Docker:
 
+- If you don't have a working PostgreSQL database:
+  - **Create folder db in any suitable your location and into notepad create new text file:**
+
+```
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    container_name: postgres13
+    environment:
+      POSTGRES_USER: exampleuser
+      POSTGRES_PASSWORD: examplepass
+      POSTGRES_DB: exampledb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+
+```
+- **Save this file docker-compose.yml**
+
+```
+  cd path/to/your/directory/db
+  
+  docker-compose up -d
+```
+
+**This will launch the postgresql databases into the container required for next step:**
+
 - Navigate to state-machine-service directory, then:
+ 
 
 ``` 
+    state-machine-service> mvn clean install
     state-machine-service> docker-compose up --build
 ```
 
@@ -22,13 +57,13 @@ CONTAINER ID   IMAGE                          COMMAND                  CREATED  
 - state-machine-service-postgres-1 - the ID: 603caf611e43 postgres:13 separate database uses as production db **port 5433->5432**.
 - core-db-1 - container with ID: 5a135b7b359f contains a development database port 5432.
 
-## To top the servers side:
+## Don't forget to stop the servers side:
 
 ```
  state-machine-service>docker-compose down
 ```
 
-## When launched through the development environment, be sure to strictly follow this order, although it is quite standard.
+## When running a server application through the development environment, be sure to strictly follow this order, although it is quite standard.
 
 - Change back  the port in the application.properties file from 5433 to 5432:
   Because my postgresql database used for development is running in another docker container core-db-1 on port 5432.
